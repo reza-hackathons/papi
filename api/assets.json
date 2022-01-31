@@ -1,0 +1,11 @@
+{
+  "assets": {
+    "0x8c835dfaa34e2ae61775e80ee29e2c724c6ae2bb": "eth",
+    "0x86f1e0420c26a858fc203a3645dd1a36868f18e5": "btc",
+    "0x5faa136fc58b6136ffdaeaac320076c4865c070f": "avax",
+    "0x151bb01c79f4516c233948d69dae39869bccb737": "sol",
+    "0xb24f50dd9918934ab2228be7a097411ca28f6c14": "luna",
+    "0x7161c3416e08abaa5cd38e68d9a28e43a694e037": "crv",
+    "0xc84da6c8ec7a57cd10b939e79eaf9d2d17834e04": "usd"
+  }
+}
