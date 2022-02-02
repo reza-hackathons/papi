@@ -30,12 +30,11 @@ def dict_hash(dictionary: Dict[str, Any]) -> str:
   dhash.update(encoded)
   return dhash.hexdigest()
 
-def dbInterface():
+def dbInterface(host : str = 'localhost'):
   creds = {}
   creds_path = os.path.join(os.path.dirname(__file__), 'creds.json')
   with open(creds_path) as f:
-    creds = json.load(f)['credentials']
-  host = '185.221.237.140'
+    creds = json.load(f)['credentials']  
   port = 27017
   user = creds['user']
   pwd  = urllib.parse.quote_plus(creds['pwd'])

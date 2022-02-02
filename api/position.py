@@ -9,23 +9,27 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 import utils
 import meta
 
-def trades(trader: str = None, asset: str = None,
-           start: int = None, end: int = None) -> list:
+def trades(_trader: str = None, _asset_list: list = None,
+           _start: int = None, _end: int = None) -> list:
   """
   get trades
-  """
-  new_asset = meta.assetNameToAddress(asset)
-  with utils.dbInterface() as client:
+  """  
+  with utils.dbInterface('185.221.237.140') as client:
     db = client['perp']
     criteria = {}
-    if trader:
-      criteria['trader'] = trader
-    if new_asset:
-      criteria['baseToken'] = new_asset
-    if start:
-      criteria['timestamp'] = {'$gte': start}
-    if end:
-      criteria['timestamp'] = {'$lte': end}    
+    if _trader:
+      criteria['trader'] = _trader
+    if _asset_list:
+      _asset_list = [meta.assetNameToAddress(asset) for asset in _asset_list]
+      _asset_list = [asset for asset in _asset_list if asset]
+      if _asset_list:
+        criteria['baseToken'] = {'$in': _asset_list}
+    if _start or _end:
+      criteria['timestamp'] = {}
+      if _start:
+        criteria['timestamp']['$gte'] = _start
+      if _end:
+        criteria['timestamp']['$lte'] = _end  
     trade_list = []
     cursor = db['trades'].find(criteria, limit = 1000).sort('blockNumberLogIndex', pymongo.DESCENDING)
     for trade in cursor:
@@ -38,7 +42,7 @@ def trades(trader: str = None, asset: str = None,
        'exchangedPositionNotional': math.fabs(trade['exchangedPositionNotional']),
        'side': 'short' if trade['exchangedPositionSize'] < 0 else 'long',
        'fee': trade['fee'],
-       'openNotional': trade['openNotional'],
+       'openNotional': math.fabs(trade['openNotional']),
        'realizedPnl': trade['realizedPnl'],
        'positionSizeAfter': trade['positionSizeAfter'],
        'entryPriceAfter': trade['entryPriceAfter'],
@@ -48,23 +52,27 @@ def trades(trader: str = None, asset: str = None,
       })
     return trade_list
 
-def openPositions(trader: str = None, asset: str = None,
-                  start: int = None, end: int = None) -> list:
+def openPositions(_trader: str = None, _asset_list: list = None,
+                  _start: int = None, _end: int = None) -> list:
   """
   Get open positions
   """  
-  new_asset = meta.assetNameToAddress(asset)
-  with utils.dbInterface() as client:
+  with utils.dbInterface('185.221.237.140') as client:
     db = client['perp']
     criteria = {}
-    if trader:
-      criteria['trader'] = trader
-    if new_asset:
-      criteria['baseToken'] = new_asset
-    if start:
-      criteria['timestamp'] = {'$gte': start}
-    if end:
-      criteria['timestamp'] = {'$lte': end}
+    if _trader:
+      criteria['trader'] = _trader
+    if _asset_list:
+      _asset_list = [meta.assetNameToAddress(asset) for asset in _asset_list]
+      _asset_list = [asset for asset in _asset_list if asset]
+      if _asset_list:
+        criteria['baseToken'] = {'$in': _asset_list}
+    if _start or _end:
+      criteria['timestamp'] = {}
+      if _start:
+        criteria['timestamp']['$gte'] = _start
+      if _end:
+        criteria['timestamp']['$lte'] = _end
     criteria['positionSize'] = {'$ne': 0}
     pos_list = []
     cursor = db['openPositions'].find(criteria, limit = 1000).sort('timestamp', pymongo.DESCENDING)
@@ -88,23 +96,27 @@ def openPositions(trader: str = None, asset: str = None,
        })
     return pos_list
 
-def closedPositions(trader: str = None, asset: str = None,
-                    start: int = None, end: int = None) -> list:
+def closedPositions(_trader: str = None, _asset_list: list = None,
+                    _start: int = None, _end: int = None) -> list:
   """
   Get closed positions
-  """  
-  new_asset = meta.assetNameToAddress(asset)
-  with utils.dbInterface() as client:
+  """    
+  with utils.dbInterface('185.221.237.140') as client:
     db = client['perp']
     criteria = {}
-    if trader:
-      criteria['trader'] = trader
-    if new_asset:
-      criteria['baseToken'] = new_asset
-    if start:
-      criteria['timestamp'] = {'$gte': start}
-    if end:
-      criteria['timestamp'] = {'$lte': end}
+    if _trader:
+      criteria['trader'] = _trader
+    if _asset_list:
+      _asset_list = [meta.assetNameToAddress(asset) for asset in _asset_list]
+      _asset_list = [asset for asset in _asset_list if asset]
+      if _asset_list:
+        criteria['baseToken'] = {'$in': _asset_list}
+    if _start or _end:
+      criteria['timestamp'] = {}
+      if _start:
+        criteria['timestamp']['$gte'] = _start
+      if _end:
+        criteria['timestamp']['$lte'] = _end
     # criteria['positionSize'] = {'$ne': 0}
     pos_list = []
     cursor = db['closedPositions'].find(criteria, limit = 4).sort('timestamp', pymongo.DESCENDING)

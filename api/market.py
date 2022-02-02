@@ -9,14 +9,14 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 import utils
 import meta
 
-def market(asset: str = None) -> dict:
+def market(_asset: str = None) -> dict:
   """
   Get market info
   """  
-  new_asset = meta.assetNameToAddress(asset)
+  new_asset = meta.assetNameToAddress(_asset)
   if not new_asset:
     return {
-      'error': f'Invalid asset name or address: {asset}. Available: {meta.availableAssets()}.'
+      'error': f'Invalid asset name or address: {_asset}. Available: {meta.availableAssets()}'
     }
   utc_now = datetime.utcnow()
   _1h_ago = math.ceil((utc_now - timedelta(hours = 1)).timestamp())  
@@ -25,7 +25,7 @@ def market(asset: str = None) -> dict:
   trades24h = []
   funding_rate = 0
   open_interest, open_value = (0, 0)
-  with utils.dbInterface() as client:
+  with utils.dbInterface('185.221.237.140') as client:
     db = client['perp']
     criteria = {
       'baseToken': new_asset,
@@ -80,7 +80,7 @@ def market(asset: str = None) -> dict:
   change24h = market_price / price_24h_ago
   change24h = (change24h - 1) if (change24h > 1) else -(1 - change24h)
   return { 
-    'name': meta.Assets[new_asset],
+    'asset': meta.Assets[new_asset],
     'baseToken': trades24h[0]['baseToken'],
     'marketPrice': market_price,
     'high24h': high_24h,
@@ -96,49 +96,43 @@ def market(asset: str = None) -> dict:
     'timestamp': trades24h[0]['timestamp'] 
   }
 
-def markets(asset_list: list = []) -> list:
+def markets(_asset_list: list = []) -> list:
   """
   Get requested markets
   """
-  asset_list = [meta.assetNameToAddress(asset) for asset in asset_list]
-  asset_list = [asset for asset in asset_list if asset]
-  if not asset_list:
-    asset_list = [asset for asset in meta.Assets.keys() if asset != meta.ReverseAssets['usd']]
-  market_list = [market(asset) for asset in asset_list]
+  _asset_list = [meta.assetNameToAddress(asset) for asset in _asset_list]
+  _asset_list = [asset for asset in _asset_list if asset]
+  if not _asset_list:
+    _asset_list = [asset for asset in meta.Assets.keys() if asset != meta.ReverseAssets['usd']]
+  market_list = [market(asset) for asset in _asset_list]
   return market_list
 
-def marketSpecs(asset: str) -> dict:
+def specs(_asset_list: list = None) -> list:
   """
   Get overall spec about a market
   """  
-  new_asset = meta.assetNameToAddress(asset)
-  if not new_asset:
-    return {
-      'error': f'Invalid asset name or address: {asset}. Available: {meta.availableAssets}.'
-    }
-
-  spec_list = []
-  with utils.dbInterface() as client:
+  if _asset_list:
+    _asset_list = [meta.assetNameToAddress(asset) for asset in _asset_list]
+    _asset_list = [asset for asset in _asset_list if asset]    
+  with utils.dbInterface('185.221.237.140') as client:
     db = client['perp']
-    criteria = {
-      'baseToken': new_asset
-    }    
-    spec_list = list(db['markets'].find(filter = criteria, limit = 1).sort('timestamp', pymongo.DESCENDING))
-  if not spec_list:
-    return{
-      'error': f'Not enough info about {asset}'
-    }
-  spec = spec_list[0]
-  return {
-    'name': meta.Assets[new_asset],
-    'baseToken': spec['baseToken'],
-    'quoteToken': spec['quoteToken'],
-    'poolAddress': spec['pool'],
-    'feeRatio': spec['feeRatio'] / 10000.0, #@ check with the devs
-    'totalVolume': spec['tradingVolume'],
-    'totalFees': spec['tradingFee'],
-    'baseLiquidity': spec['baseAmount'],
-    'quoteLiquidity': spec['quoteAmount'],
-    'introduced': spec['timestampAdded'],
-    'timestamp': spec['timestamp']
-  }
+    criteria = {}
+    if _asset_list:
+      criteria['baseToken'] = {'$in': _asset_list}    
+    cursor = db['markets'].find(filter = criteria, limit = 1).sort('timestamp', pymongo.DESCENDING)
+    spec_list = []
+    for spec in cursor:
+      spec_list.append({
+        'asset': meta.Assets[spec['baseToken']],
+        'baseToken': spec['baseToken'],
+        'quoteToken': spec['quoteToken'],
+        'poolAddress': spec['pool'],
+        'feeRatio': spec['feeRatio'] / 10000.0, #@ check with the devs
+        'totalVolume': spec['tradingVolume'],
+        'totalFees': spec['tradingFee'],
+        'baseLiquidity': spec['baseAmount'],
+        'quoteLiquidity': spec['quoteAmount'],
+        'introduced': spec['timestampAdded'],
+        'timestamp': spec['timestamp']
+      })
+    return spec_list

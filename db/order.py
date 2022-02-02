@@ -1,4 +1,5 @@
 import pymongo
+from eth_utils import from_wei
 import os
 import sys
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
@@ -9,7 +10,7 @@ def fetchOpenOrders(db):
   Fetch open orders
   """  
   query = """
-  query openOrders($last_timestamp: BigInt!) {    
+  query openOrders($last_timestamp: BigInt!) {
     openOrders: openOrders(      
       where: {
         timestamp_gte: $last_timestamp,
@@ -47,11 +48,11 @@ def fetchOpenOrders(db):
      '_id': order['id'],
      'maker': order['maker'],
      'baseToken': order['baseToken'],
-     'lowerTick': int(order['lowerTick']),
-     'upperTick': int(order['upperTick']),
+     'lowerTick': float(int(order['lowerTick'])),
+     'upperTick': float(int(order['upperTick'])),
      'baseAmount': float(order['baseAmount']),
      'quoteAmount': float(order['quoteAmount']),
-     'liquidity': order['liquidity'],
+     'liquidity': float(from_wei(abs(int(order['liquidity'])), 'ether')),
      'collectedFee': float(order['collectedFee']),
      'collectedFeeInThisLifecycle': float(order['collectedFeeInThisLifecycle']),
      'blockNumber': int(order['blockNumber']),
