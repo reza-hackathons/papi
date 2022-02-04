@@ -9,6 +9,33 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 import utils
 import meta
 
+def protocol() -> dict:
+  """
+  get protocol
+  """
+  with utils.dbInterface('185.221.237.140') as client:
+    db = client['perp']
+    
+    proto_list = cursor = list(db['protocols'].find(limit = 1).sort('timestamp', pymongo.DESCENDING))
+    if not proto_list:
+      return {}
+    active_markets = [ma for ma in meta.ReverseAssets.keys() if 'usd' not in ma.lower()] 
+    proto = proto_list[0]      
+    return {
+      'id': proto['pid'],
+      'network': proto['network'],
+      'chainId': proto['chainId'],
+      'contractVersion': proto['contractVersion'],   
+      'activeMArkets': active_markets,
+      'tradingVolume': proto['tradingVolume'],
+      'tradingFee': proto['tradingFee'],
+      'tvl': proto['totalValueLocked'],
+      'badDebt': proto['badDebt'],
+      'blockNumber': proto['blockNumber'],
+      'timestamp': proto['timestamp']
+    }
+
+
 def market(_asset: str = None) -> dict:
   """
   Get market info

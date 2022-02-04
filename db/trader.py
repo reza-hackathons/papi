@@ -67,60 +67,6 @@ def fetchTraders(db):
       print('trader data is up to date.')
       break
 
-def fetchTraderDayData(db):
-  """
-  Fetch trader day data
-  """  
-  query = """
-  query traderDayData($last_timestamp: BigInt!) {    
-    traderDayData: traderDayDatas(      
-      where: {
-        date_gte: $last_timestamp,
-      }
-      orderBy: date,
-      orderDirection: asc
-      first: 1000) {
-        id
-        trader {
-          id
-        }
-        tradingVolume
-        fee
-        realizedPnl
-        timestamp: date        
-    }
-  }
-  """
-  col_traderDayData = db['traderDayData']   
-  last_timestamp = 0
-  if col_traderDayData.count_documents({}) > 0:
-    last_timestamp = col_traderDayData.find(limit = 1).sort('timestamp', pymongo.DESCENDING)[0]['timestamp']
-  print('starting timestamp: {}'.format(last_timestamp))
-  while True:
-    res = utils.performRequest(query, {'last_timestamp': str(last_timestamp)})    
-    if 'data' not in res:
-      print(res)
-      break
-    data = res['data']        
-    day_data_list = [{
-     '_id': dd['id'],
-     'trader': dd['trader']['id'],
-     'tradingVolume': float(dd['tradingVolume']),
-     'realizedPnl': dd['realizedPnl'],
-     'fee': dd['fee'],
-     'timestamp': int(dd['timestamp'])} for dd in data['traderDayData']]
-    if not day_data_list:
-      print('nothing to be done.') 
-      break
-    last_timestamp = day_data_list[-1]['timestamp']
-    print('read {} data points {}'.format(len(day_data_list), last_timestamp))
-    for dd in day_data_list:
-      criteria = {'_id': dd['_id']}  
-      col_traderDayData.replace_one(criteria, dd, upsert = True)
-    if len(day_data_list) < 1000:
-      print('trader day data is up to date.')
-      break
-
 def fetchBadDebts(db):
   """
   Retrieve bad debts' occurences
@@ -175,5 +121,4 @@ def fetchBadDebts(db):
 if __name__ == '__main__':
   with utils.dbInterface() as client:
     fetchTraders(client['perp'])    
-    # fetchTraderDayData(client['perp'])
     fetchBadDebts(client['perp'])
