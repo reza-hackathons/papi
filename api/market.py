@@ -13,7 +13,7 @@ def protocol() -> dict:
   """
   get protocol
   """
-  with utils.dbInterface('185.221.237.140') as client:
+  with utils.dbInterface() as client:
     db = client['perp']
     
     proto_list = cursor = list(db['protocols'].find(limit = 1).sort('timestamp', pymongo.DESCENDING))
@@ -26,7 +26,7 @@ def protocol() -> dict:
       'network': proto['network'],
       'chainId': proto['chainId'],
       'contractVersion': proto['contractVersion'],   
-      'activeMArkets': active_markets,
+      'activeMarkets': active_markets,
       'tradingVolume': proto['tradingVolume'],
       'tradingFee': proto['tradingFee'],
       'tvl': proto['totalValueLocked'],
@@ -41,10 +41,6 @@ def market(_asset: str = None) -> dict:
   Get market info
   """  
   new_asset = meta.assetNameToAddress(_asset)
-  if not new_asset:
-    return {
-      'error': f'Invalid asset name or address: {_asset}. Available: {meta.availableAssets()}'
-    }
   utc_now = datetime.utcnow()
   _1h_ago = math.ceil((utc_now - timedelta(hours = 1)).timestamp())  
   _24h_ago = math.ceil((utc_now - timedelta(days = 1)).timestamp())  
@@ -52,7 +48,7 @@ def market(_asset: str = None) -> dict:
   trades24h = []
   funding_rate = 0
   open_interest, open_value = (0, 0)
-  with utils.dbInterface('185.221.237.140') as client:
+  with utils.dbInterface() as client:
     db = client['perp']
     criteria = {
       'baseToken': new_asset,
@@ -108,7 +104,7 @@ def market(_asset: str = None) -> dict:
   change24h = (change24h - 1) if (change24h > 1) else -(1 - change24h)
   return { 
     'asset': meta.Assets[new_asset],
-    'baseToken': trades24h[0]['baseToken'],
+    'baseToken': trades24h[0]['baseToken'],   
     'marketPrice': market_price,
     'high24h': high_24h,
     'low24h': low_24h,
@@ -123,33 +119,36 @@ def market(_asset: str = None) -> dict:
     'timestamp': trades24h[0]['timestamp'] 
   }
 
-def markets(_asset_list: list = []) -> list:
+def markets(_asset_list: list = None) -> list:
   """
   Get requested markets
   """
-  _asset_list = [meta.assetNameToAddress(asset) for asset in _asset_list]
-  _asset_list = [asset for asset in _asset_list if asset]
+  if _asset_list:
+    _asset_list = [meta.assetNameToAddress(asset) for asset in _asset_list]
+    _asset_list = [asset for asset in _asset_list if asset]
   if not _asset_list:
-    _asset_list = [asset for asset in meta.Assets.keys() if asset != meta.ReverseAssets['usd']]
+    _asset_list = [asset for asset in meta.Assets.keys() 
+      if (asset != meta.ReverseAssets['usd'] and asset != meta.ReverseAssets['usdc'])
+    ]
   market_list = [market(asset) for asset in _asset_list]
   return market_list
 
-def specs(_asset_list: list = None) -> list:
+def spec(_asset: str = None) -> dict:
   """
   Get overall spec about a market
   """  
-  if _asset_list:
-    _asset_list = [meta.assetNameToAddress(asset) for asset in _asset_list]
-    _asset_list = [asset for asset in _asset_list if asset]    
-  with utils.dbInterface('185.221.237.140') as client:
+  new_asset = meta.assetNameToAddress(_asset)
+  with utils.dbInterface() as client:
     db = client['perp']
-    criteria = {}
-    if _asset_list:
-      criteria['baseToken'] = {'$in': _asset_list}    
-    cursor = db['markets'].find(filter = criteria, limit = 1).sort('timestamp', pymongo.DESCENDING)
-    spec_list = []
-    for spec in cursor:
-      spec_list.append({
+    criteria = {
+      'baseToken':  new_asset
+    }    
+    spec_list = list(db['markets'].find(filter = criteria, limit = 1).sort('timestamp', pymongo.DESCENDING))
+    if not spec_list:
+      return {}
+    else:
+      spec = spec_list[0]
+      return {
         'asset': meta.Assets[spec['baseToken']],
         'baseToken': spec['baseToken'],
         'quoteToken': spec['quoteToken'],
@@ -161,5 +160,18 @@ def specs(_asset_list: list = None) -> list:
         'quoteLiquidity': spec['quoteAmount'],
         'introduced': spec['timestampAdded'],
         'timestamp': spec['timestamp']
-      })
-    return spec_list
+      }
+
+def specs(_asset_list: list = None) -> list:
+  """
+  Get overall spec about a market
+  """  
+  if _asset_list:
+    _asset_list = [meta.assetNameToAddress(asset) for asset in _asset_list]
+    _asset_list = [asset for asset in _asset_list if asset]
+  if not _asset_list:
+    _asset_list = [asset for asset in meta.Assets.keys() 
+      if (asset != meta.ReverseAssets['usd'] and asset != meta.ReverseAssets['usdc'])
+    ]   
+  spec_list = [spec(asset) for asset in _asset_list]
+  return spec_list

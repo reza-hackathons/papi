@@ -1,0 +1,440 @@
+<body style="background-color: black; color: whitesmoke; padding: 3%; font-size: 1.2em;">
+<h2 align="center">Perpetual protocol v2 API</h2>
+<h4>BaseURL: <font color="yellowgreen">http://185.221.237.140/v2</font></h4>
+<h5 align="center">Market</h5>
+<p><font color="yellowgreen">/protocol</font>
+<pre>
+output:
+<font color="#F1B42F">
+  {
+    "result": {
+      "activeMarkets": ["eth","btc","avax","sol","luna","crv"],
+      "badDebt": 270.77124344541687,
+      "blockNumber": 3238209,
+      "chainId": "10", 
+      "contractVersion": "git+ssh:&#x2F;&#x2F;git@github.com:perpetual-protocol&#x2F;perp-lushan.git#78dedad76f593204f10a779120e81b762c0ec851",
+      "id": "perpetual-protocol",
+      "network": "optimism",
+      "timestamp": 1644070115,
+      "tradingFee": 2336916.3490026253,
+      "tradingVolume": 2443787479.2405176,
+      "tvl": 27339031.845607
+    }
+  }
+</font>
+</pre>
+</p>
+
+<p><font color="yellowgreen">/markets</font>
+<pre>
+Parameters:
+- 'assets': a list of asset names or their addresses. e.g. ['eth', 'btc']
+
+output:
+<font color="#F1B42F">
+{
+  "result: {
+    "asset": "eth",
+    "baseToken": "0x8c835dfaa34e2ae61775e80ee29e2c724c6ae2bb",
+    "baseVolume24h": 4295.596122491942,
+    "change1h": -0.0005931934721277177,
+    "change24": 0.08651632406859933,
+    "fundingRate": -1.9429595019313477e-05,
+    "high24h": 3041.125933759854,
+    "low24h": 2779.315652321196,
+    "marketPrice": 3019.7718259863473,
+    "openInterest": 1974184.0142977047,
+    "openValue": 1824.8132162523991,
+    "quoteVolume24h": 12520786.469953865,
+    "sl24h": 0.5336149337417534,
+    "timestamp": 1644069815
+  }
+}
+</font>
+</pre>
+</p>
+
+<p><font color="yellowgreen">/markets/specs</font>
+<pre>
+Parameters:
+- 'assets': a list of asset names or their addresses. e.g. ['eth', 'btc']
+
+output:
+<font color="#F1B42F">
+{
+  "result: {
+    'asset': 'eth',
+    'baseToken': '0x8c835dfaa34e2ae61775e80ee29e2c724c6ae2bb',
+    'quoteToken': '0xc84da6c8ec7a57cd10b939e79eaf9d2d17834e04',
+    'poolAddress': '0x36b18618c4131d8564a714fb6b4d2b1edadc0042',
+    'feeRatio': 0.1,
+    'quoteLiquidity': 16413410.706591925,
+    'baseLiquidity': -3871.9646572769366,
+    'totalFees': 800952.0879748284,
+    'totalVolume': 837484595.222224
+    'introduced': 1637995895,
+    'timestamp': 1644138982
+  }
+}
+</font>
+</pre>
+</p>
+
+<h5 align="center">Position</h5>
+<p><font color="yellowgreen">/position/trades</font>
+<pre>
+parameters:
+- 'assets': a list of asset names or their addresses. e.g. ['eth', 'btc']
+- 'trader': trader's address
+- 'start': unix timestamp for pagination start(inclusive)
+- 'end': unix timestamp for pagination end(inclusive)
+output:
+<font color="#F1B42F">
+"result": {
+    "asset": "sol",
+    "baseToken": "0x151bb01c79f4516c233948d69dae39869bccb737",
+    "entryPriceAfter": 115.17637513250638,
+    "exchangedPositionNotional": 5180.213341273286,
+    "exchangedPositionSize": 45.0,
+    "fee": 5.185398740013299,
+    "marketPriceAfter": 115.1705572437387,
+    "openNotional": 10365.873761925573,
+    "positionSizeAfter": 90.0,
+    "realizedPnl": 0.0,
+    "side": "long",
+    "swappedPrice": 115.11585202829524,
+    "timestamp": 1644072565,
+    "trader": "0xa813ef76584e90e9565d555df6ba37596dafeea1",
+    "txHash": "0x3f1bbc51c4e1f5dce077abbdf7acfb6353ffca52f1925055e98613a53b514113"
+  }
+}
+</font>
+</pre>
+</p>
+
+<p><font color="yellowgreen">/position/open</font>
+<pre>
+parameters:
+- 'assets': a list of asset names or their addresses. e.g. ['eth', 'btc']
+- 'trader': trader's address
+- 'start': unix timestamp for pagination start(inclusive)
+- 'end': unix timestamp for pagination end(inclusive)
+
+output:
+<font color="#F1B42F">
+"result": {
+    "asset": "avax",
+    "baseToken": "0x5faa136fc58b6136ffdaeaac320076c4865c070f",
+    "blockNumber": 3238958,
+    "cumFees": 13797.30177493381,
+    "cumFundingPayment": 612.5397773647189,
+    "cumLiquidationFee": 0.0,
+    "cumRealizedPnl": 28013.25904363206,
+    "cumTradingVolume": 13790419.132473473,
+    "entryPrice": 78.89062602252486,
+    "openNotional": 2911.0641002311672,
+    "positionSize": 36.9,
+    "side": "long",
+    "timestamp": 1644072865,
+    "trader": "0x6541e4d0f50a82544401b1e0721626415a37de99"}
+  }
+}
+</font>
+</pre>
+</p>
+
+<p><font color="yellowgreen">/position/closed</font>
+<pre>
+parameters:
+- 'assets': a list of asset names or their addresses. e.g. ['eth', 'btc']
+- 'trader': trader's address
+- 'start': unix timestamp for pagination start(inclusive)
+- 'end': unix timestamp for pagination end(inclusive)
+
+output:
+<font color="#F1B42F">
+"result": {
+    "asset": "sol",
+    "baseToken": "0x151bb01c79f4516c233948d69dae39869bccb737",
+    "blockNumber": 3239491,
+    "entryPrice": 114.13028218049458,
+    "fee": 54048.67017017017,
+    "fundingPayment": 8141.582316029243,
+    "liquidationFee": 0.0,
+    "openNotional": 670098.711105556,
+    "positionSize": 5871.348938275727,
+    "realizedPnl": -137425.21902872503,
+    "side": "long",
+    "timestamp": 1644073167,
+    "trader": "0xf8489bcef22d3282bb884b9e9cc708bb465c075e"
+  }
+}
+</font>
+</pre>
+</p>
+
+<h5 align="center">Funding</h5>
+<p><font color="yellowgreen">/funding/updates</font>
+<pre>
+parameters:
+- 'assets': a list of asset names or their addresses. e.g. ['eth', 'btc']
+- 'start': unix timestamp for pagination start(inclusive)
+- 'end': unix timestamp for pagination end(inclusive)
+
+output:
+<font color="#F1B42F">
+"result": {
+    "baseToken": "0x151bb01c79f4516c233948d69dae39869bccb737",
+    "blockNumber": 3239327,
+    "dailyFundingRate": -0.010506164990585216,
+    "indexTwap": 116.35250800251256,
+    "markTwap": 115.13008935636978,
+    "name": "sol",
+    "timestamp": 1644073167,
+    "txHash": "0x578e236139246ac4131020bd07606662ea4656ce6c7ccb36fbaf1f1e05a8c9cf"
+  }
+}
+</font>
+</pre>
+</p>
+<p><font color="yellowgreen">/funding/payments</font>
+<pre>
+parameters:
+- 'assets': a list of asset names or their addresses. e.g. ['eth', 'btc']
+- 'trader': trader's address
+- 'start': unix timestamp for pagination start(inclusive)
+- 'end': unix timestamp for pagination end(inclusive)
+
+output:
+<font color="#F1B42F">
+"result": {
+    "baseToken": "0x7161c3416e08abaa5cd38e68d9a28e43a694e037",
+    "blockNumber": 3239543,
+    "fundingPayment": -20.582505798179596,
+    "name": "crv",
+    "timestamp": 1644073470,
+    "trader": "0x57944fba39b44189f7173e70cf9ed99f2395283a",
+    "txHash": "0x64ce570d9974128f37348a5498b75a0efcaf92dffe8464289f0866e3005b0a0f"
+  }
+}
+</font>
+</pre>
+</p>
+
+<h5 align="center">Liquidations</h5>
+<p><font color="yellowgreen">/liquidations</font>
+<pre>
+parameters:
+- 'assets': a list of asset names or their addresses. e.g. ['eth', 'btc']
+- 'trader': trader's address
+- 'liquidator': liquidator's address
+- 'start': unix timestamp for pagination start(inclusive)
+- 'end': unix timestamp for pagination end(inclusive)
+
+output:
+<font color="#F1B42F">
+"result": {
+    "asset": "eth",
+    "baseToken": "0x8c835dfaa34e2ae61775e80ee29e2c724c6ae2bb",
+    "blockNumber": 3209149,
+    "liquidationFee": 26.102683040580565,
+    "liquidator": "0x4680cca73f815b583a201afef4b70451fb53b7af",
+    "positionNotionalAbs": 1044.1073216232226,
+    "positionSizeAbs": 0.35497303957492704,
+    "timestamp": 1643992955,
+    "trader": "0x8212ff5baed3b670849cc091153ff9b4d66f116a",
+    "txHash": "0x64427b8d66b48763000bdd33a537e4d8bd0da4eb4c9d1ffd884fbf9d3dfcabe8"
+  }
+}
+</font>
+</pre>
+</p>
+
+<h5 align="center">Orders</h5>
+<p><font color="yellowgreen">/order/open</font>
+<pre>
+parameters:
+- 'assets': a list of asset names or their addresses. e.g. ['eth', 'btc']
+- 'maker': maker's address
+- 'lower_tick': lower_tick of the range
+- 'upper_tick': upper_tick of the range
+- 'start': unix timestamp for pagination start(inclusive)
+- 'end': unix timestamp for pagination end(inclusive)
+
+output:
+<font color="#F1B42F">
+"result": {
+    "asset": "crv",
+    "baseAmount": 12794.141292854794,
+    "baseToken": "0x7161c3416e08abaa5cd38e68d9a28e43a694e037",
+    "blockNumber": 3203143,
+    "collectedFee": 0.0,
+    "collectedFeeInThisLifecycle": 0.0,
+    "liquidity": 76864.34457834592,
+    "lowerTick": 960.0,
+    "maker": "0x8cb9d4593d58f80fb19deb07a5fad99a3c0b6ab8",
+    "quoteAmount": 57813.5566755238,
+    "timestamp": 1643986908,
+    "upperTick": 18900.0
+  }
+}
+</font>
+</pre>
+</p>
+
+<p><font color="yellowgreen">/order/maker/profile</font>
+<pre>
+parameters:
+- 'maker': maker's address
+
+output:
+<font color="#F1B42F">
+"result": {
+    "blockNumber": 3229106,
+    "collectedFee": 0.0,
+    "maker": "0xb2cddf705ea6f12d7b5da081f679305a3209af99",
+    "timestamp": 1644047709
+  }
+}
+</font>
+</pre>
+</p>
+<h5 align="center">Trader</h5>
+<p><font color="yellowgreen">/trader/profile</font>
+<pre>
+parameters:
+- 'trader': trader's address
+
+output:
+<font color="#F1B42F">
+"result": {
+   "blockNumber": 3239963,
+   "collateral": 933.9347994304302,
+   "cumBadDebt": 0.0,
+   "cumFundingPayment": 0.6103190757464695,
+   "cumLiquidationFee": 0.0,
+   "cumMakerFee": 0.0,
+   "cumRealizedPnl": -33.620234493823325,
+   "cumTradingFee": 39.114240805769235,
+   "cumTradingVolume": 39090.93904228776,
+   "timestamp": 1644074071,
+   "totalPnl": -34.2305535695698,
+   "trader": "0x4d26bc95c771d1d0a5c5e76297c8f53ffe5f6c19"
+  }
+}
+</font>
+</pre>
+</p>
+<p><font color="yellowgreen">/trader/badDebts</font>
+<pre>
+parameters
+- 'trader': trader's address
+- 'start': unix timestamp for pagination start(inclusive)
+- 'end': unix timestamp for pagination end(inclusive)
+
+output:
+<font color="#F1B42F">
+"result": {
+   "amount": 5.79453032726e-07,
+   "blockNumber": 3238209,
+   "timestamp": 1644070115,
+   "trader": "0x06e81bb48181887ac8a2f4d327df272b7f3e7e04",
+   "txHash": "0xa427a5be383d197eafe48a2918632537243a9541b7f5a43d8f2003b1f36f347e"
+  }
+}
+</font>
+</pre>
+</p>
+
+<p><font color="yellowgreen">/trader/dayData</font>
+<pre>
+parameters
+- 'trader': trader's address, ** required **
+- 'start': unix timestamp for pagination start(inclusive)
+- 'end': unix timestamp for pagination end(inclusive)
+
+output:
+<font color="#F1B42F">
+"result": {
+  {
+    'fee': 27.805812449958704, 
+    'realizedPnl': -91.22040717675574,
+    'timestamp': 1643846400,
+    'tradingVolume': 27791.870865644203
+  }
+}
+</font>
+</pre>
+</p>
+
+<h5 align="center">Account</h5>
+<p><font color="yellowgreen">/account/deposits</font>
+<pre>
+parameters:
+- 'assets': a list of asset names or their addresses. e.g. ['eth', 'btc'] ** better to be left out since all deposits are in `usdc`
+- 'trader': trader's address
+- 'start': unix timestamp for pagination start(inclusive)
+- 'end': unix timestamp for pagination end(inclusive)
+
+output:
+<font color="#F1B42F">
+  "result": {
+  "amount": 3403.417031,
+  "blockNumber": 3238007,
+  "collateralName": "usdc",
+  "collateralToken": "0x7f5c764cbc14f9669b88837ca1490cca17c31607",
+  "timestamp": 1644069513,
+  "trader": "0xa813ef76584e90e9565d555df6ba37596dafeea1",
+  "txHash": "0x916705565bb3ce56fb3c1c738353b6855fc73193bc9164f6bc01b0a7a4114066"
+  }
+}
+</font>
+</pre>
+</p>
+
+<p><font color="yellowgreen">/account/withdrawals</font>
+<pre>
+parameters:
+- 'assets': a list of asset names or their addresses. e.g. ['eth', 'btc'] ** better to be left out since all deposits are in `usdc`
+- 'trader': trader's address
+- 'start': unix timestamp for pagination start(inclusive)
+- 'end': unix timestamp for pagination end(inclusive)
+
+output:
+<font color="#F1B42F">
+"result": {
+  "amount": 3.007374,
+  "blockNumber": 3238209,
+  "collateralName": "usdc",
+  "collateralToken": "0x7f5c764cbc14f9669b88837ca1490cca17c31607",
+  "timestamp": 1644070115,
+  "trader": "0x06e81bb48181887ac8a2f4d327df272b7f3e7e04",
+  "txHash":"0xa427a5be383d197eafe48a2918632537243a9541b7f5a43d8f2003b1f36f347e"
+  }
+}
+</font>
+</pre>
+</p>
+
+<hr/>
+<h4>How to initiate a request?</h4>
+
+<p>As an example, the following python snippet retirives latest market stats for `eth`:</p>
+<pre>
+<font color="greenyellow">
+import requests, json
+
+request = requests.post('185.221.237.140/v2/markets',
+    data = json.dumps({
+            'assets': ['eth']            
+           }),
+    headers = {'content-type': 'application/json'}
+)
+if request.status_code == 200:
+  print(request.json()['result'])
+else:
+  print('status_code: {}'.format(request.status_code))
+</font>
+</pre>
+Please note that the output of any paginated result is limited to the <u>1000</u> most recent entries.
+</body>

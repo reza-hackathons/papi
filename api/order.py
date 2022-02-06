@@ -9,19 +9,19 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 import utils
 import meta
 
-def openOrders(maker: str = None, _asset_list: list = None,
+def openOrders(_maker: str = None, _asset_list: list = None,
                _lower_tick: int = None, _upper_tick: int = None,
                _start: int = None, _end: int = None) -> list:
   """
   Get open orders
   """  
-  with utils.dbInterface('185.221.237.140') as client:
+  with utils.dbInterface() as client:
     db = client['perp']
     criteria = {
       'liquidity': {'$ne': 0}
     }
-    if maker:
-      criteria['maker'] = maker
+    if _maker:
+      criteria['maker'] = _maker
     if _asset_list:
       _asset_list = [meta.assetNameToAddress(asset) for asset in _asset_list]
       _asset_list = [asset for asset in _asset_list if asset]
@@ -57,15 +57,15 @@ def openOrders(maker: str = None, _asset_list: list = None,
       })
     return order_list
 
-def makers(address: str = None) -> dict:
+def makers(_address: str = None) -> dict:
   """
   Get makers
   """  
-  with utils.dbInterface('185.221.237.140') as client:
+  with utils.dbInterface() as client:
     db = client['perp']    
     criteria = {}
-    if address:
-      criteria['maker'] = address    
+    if _address:
+      criteria['maker'] = _address    
     cursor = db['makers'].find(criteria, limit = 1000).sort('timestamp', pymongo.DESCENDING)
     maker_list = []
     for mk in cursor:      

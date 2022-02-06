@@ -10,11 +10,11 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 import utils
 import meta
 
-def info(_address: str = None) -> dict:
+def profile(_address: str = None) -> dict:
   """
-  Get info
+  Get profile
   """  
-  with utils.dbInterface('185.221.237.140') as client:
+  with utils.dbInterface() as client:
     db = client['perp']
     criteria = {}
     if _address:
@@ -43,7 +43,7 @@ def badDebts(_trader: str = None,
   """
   Get bad debts
   """  
-  with utils.dbInterface('185.221.237.140') as client:
+  with utils.dbInterface() as client:
     db = client['perp']
     criteria = {}
     if _trader:
@@ -129,8 +129,8 @@ def dayData(_trader: str,
             _start: int = None, _end: int = None) -> []:
   """
   Get day data
-  """  
-  with utils.dbInterface('185.221.237.140') as client:
+  """ 
+  with utils.dbInterface() as client:
     db = client['perp']
     # update trader's day data
     fetchTraderDayData(db, _trader)

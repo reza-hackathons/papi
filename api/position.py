@@ -14,7 +14,7 @@ def trades(_trader: str = None, _asset_list: list = None,
   """
   get trades
   """  
-  with utils.dbInterface('185.221.237.140') as client:
+  with utils.dbInterface() as client:
     db = client['perp']
     criteria = {}
     if _trader:
@@ -57,7 +57,7 @@ def openPositions(_trader: str = None, _asset_list: list = None,
   """
   Get open positions
   """  
-  with utils.dbInterface('185.221.237.140') as client:
+  with utils.dbInterface() as client:
     db = client['perp']
     criteria = {}
     if _trader:
@@ -101,7 +101,7 @@ def closedPositions(_trader: str = None, _asset_list: list = None,
   """
   Get closed positions
   """    
-  with utils.dbInterface('185.221.237.140') as client:
+  with utils.dbInterface() as client:
     db = client['perp']
     criteria = {}
     if _trader:
@@ -119,7 +119,7 @@ def closedPositions(_trader: str = None, _asset_list: list = None,
         criteria['timestamp']['$lte'] = _end
     # criteria['positionSize'] = {'$ne': 0}
     pos_list = []
-    cursor = db['closedPositions'].find(criteria, limit = 4).sort('timestamp', pymongo.DESCENDING)
+    cursor = db['closedPositions'].find(criteria, limit = 1000).sort('timestamp', pymongo.DESCENDING)
     for pos in cursor:
       pos_list.append({
         # '_id': pos['id'],

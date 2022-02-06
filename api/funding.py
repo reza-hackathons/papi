@@ -14,7 +14,7 @@ def updates(_asset_list: list = None,
   """
   Get funding updates(changes)
   """    
-  with utils.dbInterface('185.221.237.140') as client:
+  with utils.dbInterface() as client:
     db = client['perp']
     criteria = {}    
     if _asset_list:
@@ -49,7 +49,7 @@ def settlements(_trader: str = None, _asset_list: list = None,
   """
   Get funding settlements(payments)
   """  
-  with utils.dbInterface('185.221.237.140') as client:
+  with utils.dbInterface() as client:
     db = client['perp']
     criteria = {}
     if _trader:

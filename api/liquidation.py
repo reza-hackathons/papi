@@ -15,7 +15,7 @@ def liquidations(_trader: str = None, _asset_list: list = None,
   """
   Get liquidations
   """  
-  with utils.dbInterface('185.221.237.140') as client:
+  with utils.dbInterface() as client:
     db = client['perp']
     criteria = {}
     if _trader:

@@ -14,7 +14,7 @@ def deposits(_trader: str = None, _asset_list: list = None,
   """
   Get deposits
   """  
-  with utils.dbInterface('185.221.237.140') as client:
+  with utils.dbInterface() as client:
     db = client['perp']
     criteria = {}
     if _trader:
@@ -50,7 +50,7 @@ def withdrawals(_trader: str = None, _asset_list: list = None,
   """
   Get withdrawals
   """  
-  with utils.dbInterface('185.221.237.140') as client:
+  with utils.dbInterface() as client:
     db = client['perp']
     criteria = {}
     if _trader:
