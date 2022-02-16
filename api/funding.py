@@ -38,7 +38,7 @@ def updates(_asset_list: list = None,
        'name': meta.Assets[funding['baseToken']],
        'markTwap': funding['markTwap'],
        'indexTwap': funding['indexTwap'],
-       'dailyFundingRate': funding['dailyFundingRate'],     
+       'dailyFundingRate': funding['dailyFundingRate'] * 24 / 100,     
        'blockNumber': funding['blockNumber'],
        'timestamp': funding['timestamp']
       })

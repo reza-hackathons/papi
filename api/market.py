@@ -115,7 +115,7 @@ def market(_asset: str = None) -> dict:
     'sl24h': shorts_vol24 / quote_vol24h,
     'openInterest': open_interest,
     'openValue': open_value,
-    'fundingRate': funding_rate,
+    'fundingRate': funding_rate * 24 / 100,
     'timestamp': trades24h[0]['timestamp'] 
   }
 
