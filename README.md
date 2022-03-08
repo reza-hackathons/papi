@@ -14,6 +14,3 @@ Right now almost all data are retrieved with a maximum of 10 mitues delay so ple
 - Setup the crontab to call files within the `db/` directory  
 - Setup NgineX and a uwsgi instance to serve the `server.py`
 - Note than you need to manually update the `assets.json` file once new market are added  
-
-## Demo
-A live demo is available at http://185.221.237.140/
